@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_PeleFW_name": {
+            "value": null
+        },
+        "publicIPAddresses_PeleFW_name": {
+            "value": null
+        },
+        "networkInterfaces_PeleFW_eth0_name": {
+            "value": null
+        },
+        "networkInterfaces_PeleFW_eth1_name": {
+            "value": null
+        },
+        "storageAccounts_bootdiaggk53o3hkeogme_name": {
+            "value": null
+        },
+        "virtualMachines_PeleFW_id": {
+            "value": null
+        },
+        "networkInterfaces_PeleFW_eth0_id": {
+            "value": null
+        },
+        "networkInterfaces_PeleFW_eth1_id": {
+            "value": null
+        }
+    }
+}

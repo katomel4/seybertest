@@ -1,0 +1,274 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_PeleFW_name": {
+            "defaultValue": "PeleFW",
+            "type": "String"
+        },
+        "publicIPAddresses_PeleFW_name": {
+            "defaultValue": "PeleFW",
+            "type": "String"
+        },
+        "networkInterfaces_PeleFW_eth0_name": {
+            "defaultValue": "PeleFW-eth0",
+            "type": "String"
+        },
+        "networkInterfaces_PeleFW_eth1_name": {
+            "defaultValue": "PeleFW-eth1",
+            "type": "String"
+        },
+        "storageAccounts_bootdiaggk53o3hkeogme_name": {
+            "defaultValue": "bootdiaggk53o3hkeogme",
+            "type": "String"
+        },
+        "virtualMachines_PeleFW_id": {
+            "defaultValue": "/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/VSECRG/providers/Microsoft.Compute/disks/PeleFW",
+            "type": "String"
+        },
+        "networkInterfaces_PeleFW_eth0_id": {
+            "defaultValue": "/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/SharedRG/providers/Microsoft.Network/virtualNetworks/DR-VNET/subnets/VSec_External",
+            "type": "String"
+        },
+        "networkInterfaces_PeleFW_eth1_id": {
+            "defaultValue": "/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/SharedRG/providers/Microsoft.Network/virtualNetworks/DR-VNET/subnets/DMZ10",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "comments": "Generalized from resource: '/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/VSecRG/providers/Microsoft.Compute/virtualMachines/PeleFW'.",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('virtualMachines_PeleFW_name')]",
+            "apiVersion": "2017-03-30",
+            "location": "westeurope",
+            "plan": {
+                "name": "sg-byol",
+                "product": "check-point-vsec-r80",
+                "publisher": "checkpoint"
+            },
+            "tags": {
+                "provider": "30DE18BC-F9F6-4F22-9D30-54B8E74CFD5F"
+            },
+            "scale": null,
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D3_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "checkpoint",
+                        "offer": "check-point-vsec-r80",
+                        "sku": "sg-byol",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[parameters('virtualMachines_PeleFW_name')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Standard_LRS",
+                            "id": "[parameters('virtualMachines_PeleFW_id')]"
+                        },
+                        "diskSizeGB": 100
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[concat(parameters('virtualMachines_PeleFW_name'),'pelefw', parameters('virtualMachines_PeleFW_name'))]",
+                    "adminUsername": "notused",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false
+                    },
+                    "secrets": []
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PeleFW_eth0_name'))]",
+                            "properties": {
+                                "primary": true
+                            }
+                        },
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PeleFW_eth1_name'))]",
+                            "properties": {
+                                "primary": false
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[concat('https', '://', parameters('storageAccounts_bootdiaggk53o3hkeogme_name'), '.blob.core.windows.net', '/')]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PeleFW_eth0_name'))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_PeleFW_eth1_name'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_bootdiaggk53o3hkeogme_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/VSecRG/providers/Microsoft.Network/networkInterfaces/PeleFW-eth0'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_PeleFW_eth0_name')]",
+            "apiVersion": "2017-10-01",
+            "location": "westeurope",
+            "tags": {
+                "provider": "30DE18BC-F9F6-4F22-9D30-54B8E74CFD5F"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "57ed651d-52fb-483f-93c3-41db0c48ff74",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"f80d11a2-ce4a-4f60-a59c-653a07f241ac\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "192.168.250.4",
+                            "privateIPAllocationMethod": "Static",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_PeleFW_name'))]"
+                            },
+                            "subnet": {
+                                "id": "[parameters('networkInterfaces_PeleFW_eth0_id')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "o50zimobfz2u5l3ha5l25tbo4h.ax.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-2B-EC-9D",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": true,
+                "primary": true,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_PeleFW_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_PeleFW_name'))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_PeleFW_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/VSecRG/providers/Microsoft.Network/networkInterfaces/PeleFW-eth1'.",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[parameters('networkInterfaces_PeleFW_eth1_name')]",
+            "apiVersion": "2017-10-01",
+            "location": "westeurope",
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "aa048ea9-02fd-4220-901c-2ba22cefc0ae",
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "etag": "W/\"692b7061-e3c9-42c7-a54c-1a79cf79d76f\"",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "192.168.10.5",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[parameters('networkInterfaces_PeleFW_eth1_id')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": [],
+                    "appliedDnsServers": [],
+                    "internalDomainNameSuffix": "o50zimobfz2u5l3ha5l25tbo4h.ax.internal.cloudapp.net"
+                },
+                "macAddress": "00-0D-3A-22-50-7D",
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "primary": false,
+                "virtualMachine": {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_PeleFW_name'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('virtualMachines_PeleFW_name'))]"
+            ]
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/VSecRG/providers/Microsoft.Network/publicIPAddresses/PeleFW'.",
+            "type": "Microsoft.Network/publicIPAddresses",
+            "sku": {
+                "name": "Basic"
+            },
+            "name": "[parameters('publicIPAddresses_PeleFW_name')]",
+            "apiVersion": "2017-10-01",
+            "location": "westeurope",
+            "tags": {
+                "provider": "30DE18BC-F9F6-4F22-9D30-54B8E74CFD5F"
+            },
+            "scale": null,
+            "properties": {
+                "provisioningState": "Succeeded",
+                "resourceGuid": "389443e5-41db-4df9-8611-1ee72b064d49",
+                "ipAddress": "13.80.159.37",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 30,
+                "dnsSettings": {
+                    "domainNameLabel": "[concat(parameters('publicIPAddresses_PeleFW_name'),'pelefw', parameters('publicIPAddresses_PeleFW_name'))]",
+                    "fqdn": "[concat(parameters('publicIPAddresses_PeleFW_name'),'pelefw.westeurope.cloudapp.azure.com')]"
+                }
+            },
+            "dependsOn": []
+        },
+        {
+            "comments": "Generalized from resource: '/subscriptions/31170fd7-5552-4321-b5e7-72a7c1f3f1f0/resourceGroups/VSecRG/providers/Microsoft.Storage/storageAccounts/bootdiaggk53o3hkeogme'.",
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "Storage",
+            "name": "[parameters('storageAccounts_bootdiaggk53o3hkeogme_name')]",
+            "apiVersion": "2017-10-01",
+            "location": "westeurope",
+            "tags": {
+                "provider": "30DE18BC-F9F6-4F22-9D30-54B8E74CFD5F"
+            },
+            "scale": null,
+            "properties": {
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": false,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                }
+            },
+            "dependsOn": []
+        }
+    ]
+}
